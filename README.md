@@ -1,73 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# BeLucky
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+##  Local development 
 
-## Description
+### Pre-requisites 
+- You need [Docker Desktop](https://www.docker.com/products/docker-desktop) installed on your machine. You should download directly from [website](https://www.docker.com/products/docker-desktop) based on your os and complete the setup.
+- Install `git` from [website](https://git-scm.com/downloads)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Steps
+  1. Create a folder for beLucky workspace
 
-## Installation
+       ```
+       mkdir  belucky
+       ```
 
-```bash
-$ npm install
+  2. Change current working directory to it by
+
+       ```
+       cd belucky
+       ```
+
+  3. Clone repositories
+               
+       git clone git@github.com:nchinchilla/belucky-user-service.git
+       
+              
+   4. Build project
+      
+      ```
+      cd belucky-user-service
+      npm i
+      
+      ```
+
+   5.  Copy `docker-compose.yaml` file with 
+
+      ```
+      cd ..
+      cp ./belucky-user-service/docker-compose.yaml ./
+      
+      ```
+
+   5. Copy `scripts` folder 
+
+      ```
+      cp -R ./belucky-user-service/scripts ./ 
+      
+      ```
+
+   6.  Build and Run the containers with following command, make sure docker desktop is running.
+   
+       ```
+       docker-compose -f docker-compose.yaml up --build
+
+       ```
+
+
+
+### Verification  
+
+
+### Create user
 ```
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+curl --request POST 'http://localhost:3001/user' \
+--header 'Content-Type: application/json' \
+--data-raw '{ "username": "nahuel2", "password": "1234", "name":"nahuelon", "street": "crisotomos 4532", "cityId": 1, "countryId":1 }'
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### Get JWT
+```
+curl -i --request POST 'http://localhost:3001/auth/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{ "username": "nahuel2", "password": "1234"}'
 ```
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Get UserById
+```
+curl --location --request GET 'http://localhost:3001/user/1' \
+--header 'Authorization: Bearer {Get Token from Get Jwt endpoint}' \
+--header 'Content-Type: application/json' \
+```
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Documentation
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+http://localhost:3001/api/
