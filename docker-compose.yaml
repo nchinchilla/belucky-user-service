@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  belucky-mysql-db:
+    image: mysql:5.7
+    container_name: belucky-db
+    volumes:
+      - ./db/mysql-db:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3306:3306
+    command: mysqld --sql_mode=""
+
+  belucky-redis:
+    image: redis:alpine
+    container_name: belucky-redis
+    ports:
+      - "6379:6379"
+
+  belucky-user-serivce:
+    image: node:lts-alpine
+    container_name: belucky-user-service
+    ports:
+      - "3001:3001"
+    working_dir: /belucky-user-service
+    volumes:
+      - ./belucky-user-service:/belucky-user-service
+    depends_on:
+      - belucky-mysql-db
+    environment:
+      - NODE_ENV=development
+    command: npm run start:dev
+
+  
