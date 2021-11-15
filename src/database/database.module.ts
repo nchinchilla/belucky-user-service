@@ -9,7 +9,6 @@ import { ProfileRepository } from './repositories/profile.repository';
 import { UserRepository } from './repositories/user.repository';
 
 const databasePoolFactory = async (configService: ConfigService) => {
-  console.log('****** ' + configService.get('DB_HOST'));
   const connection = new createConnection({
     host: configService.get('DB_HOST'),
     user: configService.get('DB_USERNAME'),
