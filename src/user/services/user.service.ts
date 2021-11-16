@@ -7,6 +7,8 @@ import { UserNotCreatedException } from '../exceptions/create-user.exception';
 import { UserNameAlreadyExistsException } from '../exceptions/user-already-exists.exception';
 import { UserWithAddressDto } from '../dtos/user-with-address.dto';
 import { CacheService } from '../../core/services/cache.service';
+import { isEmpty } from 'lodash';
+import { UserNotExistsException } from '../exceptions/user-not-exists.exception';
 
 @Injectable()
 export class UserService {
@@ -53,17 +55,26 @@ export class UserService {
   }
 
   async getUser(userId: number): Promise<UserWithAddressDto> {
-    const res = await this.userRepository.findUser(userId);
+    try {
+      const res = await this.userRepository.findUser(userId);
 
-    return {
-      id: res.userId,
-      name: res.profileName,
-      address: {
-        street: res.streetName,
-        city: res.cityName,
-        country: res.countryName,
-      },
-    };
+      if (isEmpty(res)) {
+        throw new UserNotExistsException();
+      }
+
+      return {
+        id: res.userId,
+        name: res.profileName,
+        address: {
+          street: res.streetName,
+          city: res.cityName,
+          country: res.countryName,
+        },
+      };
+    } catch (error) {
+      Logger.error(`Error to attempt get new user: ${error}`);
+      throw new UserNotExistsException(error);
+    }
   }
 
   getUserCacheKey(userId: string) {
